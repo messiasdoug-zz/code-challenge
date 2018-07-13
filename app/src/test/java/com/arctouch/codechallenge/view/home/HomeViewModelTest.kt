@@ -13,11 +13,11 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class HomeViewModelTest {
 
-    lateinit var api: TmdbApi
-    lateinit var viewModel: HomeViewModel
+    private lateinit var api: TmdbApi
+    private lateinit var viewModel: HomeViewModel
 
     @Mock
-    lateinit var observable: Observable<UpcomingMoviesResponse>
+    private lateinit var observable: Observable<UpcomingMoviesResponse>
 
     @Before
     fun setUp() {

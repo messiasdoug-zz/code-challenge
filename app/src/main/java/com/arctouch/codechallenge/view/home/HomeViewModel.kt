@@ -9,11 +9,20 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class HomeViewModel @Inject constructor(val api: TmdbApi) : ViewModel() {
+class HomeViewModel @Inject constructor(private val api: TmdbApi) : ViewModel() {
 
     val movies: MutableLiveData<List<Movie>> = MutableLiveData()
 
     fun upcomingMovies(page: Long) {
+        if (Cache.genres.isEmpty()) {
+            api.genres(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        Cache.cacheGenres(it.genres)
+                    }
+        }
+
         api.upcomingMovies(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE, page, TmdbApi.DEFAULT_REGION)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
