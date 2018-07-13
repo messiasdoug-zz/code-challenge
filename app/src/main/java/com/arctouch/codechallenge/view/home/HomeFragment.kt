@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.arctouch.codechallenge.R
 import com.arctouch.codechallenge.di.Injectable
+import com.arctouch.codechallenge.view.common.NavigationController
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
@@ -16,6 +17,9 @@ class HomeFragment : Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var controller: NavigationController
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -29,7 +33,10 @@ class HomeFragment : Fragment(), Injectable {
                 .get(HomeViewModel::class.java)
 
         viewModel.movies.observeForever {
-            recyclerView.adapter = HomeAdapter(it!!)
+            val adapter = HomeAdapter(it!!) { movie ->
+                controller.toDetails(movie.id)
+            }
+            recyclerView.adapter = adapter
             progressBar.visibility = View.GONE
         }
         viewModel.upcomingMovies( 1)
